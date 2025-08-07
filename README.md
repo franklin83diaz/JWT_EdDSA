@@ -6,3 +6,7 @@ I only had a couple of hours to work on it, so for now it’s a basic but functi
 ![img1](img/1.png)
 
 ![img2](img/2.png)
+
+
+openssl genpkey -algorithm ed25519 -out ed25519_priv.pem
+openssl pkey -in ed25519_priv.pem -pubout -out ed25519_pub.pem

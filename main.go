@@ -7,6 +7,7 @@ import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/widget"
 )
 
@@ -23,6 +24,9 @@ func main() {
 	inputDEc := widget.NewEntry()
 	inputDEc.SetPlaceHolder("decode body JWT...")
 	inputDEc.MultiLine = true
+
+	inputDEc.Wrapping = fyne.TextWrapWord
+	inputDEc.SetMinRowsVisible(10)
 	inputDEc.Wrapping = fyne.TextWrapWord
 	inputDEc.SetMinRowsVisible(10)
 
@@ -37,7 +41,19 @@ func main() {
 		inputEnc,
 		widget.NewLabel("JWT EDDSA DECODE"),
 		inputDEc,
-		widget.NewLabel("PEMS:"),
+		container.NewHBox(
+			widget.NewLabel("PKCS8:"),
+			layout.NewSpacer(),
+			widget.NewButton("Generate Keys", func() {
+				pub, priv, err := pkg.GenerateKeyPair()
+				if err != nil {
+					log.Println("Error generating key pair:", err)
+				} else {
+					pubPEM.SetText(pub)
+					privPEM.SetText(priv)
+				}
+			}),
+		),
 		privPEM,
 		pubPEM,
 		widget.NewButton("Verify & Decode", func() {
