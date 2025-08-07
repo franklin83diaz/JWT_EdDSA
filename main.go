@@ -14,6 +14,8 @@ func main() {
 	a := app.New()
 	w := a.NewWindow("JWT EDDSA")
 
+	w.Resize(fyne.NewSize(600, 570))
+
 	inputEnc := widget.NewEntry()
 	inputEnc.SetPlaceHolder("encode JWT...")
 	inputEnc.MultiLine = true
@@ -38,8 +40,9 @@ func main() {
 		widget.NewLabel("PEMS:"),
 		privPEM,
 		pubPEM,
-		widget.NewButton("Check", func() {
-			claims, err := pkg.VerifyJWT(inputEnc.Text, []byte(pkg.ParsePubPEM(pubPEM.Text)))
+		widget.NewButton("Verify & Decode", func() {
+			claims, err := pkg.Verify(inputEnc.Text, pubPEM.Text)
+
 			if err != nil {
 				log.Println("Error verifying JWT:", err)
 				claims = "Error: " + err.Error()
@@ -47,9 +50,9 @@ func main() {
 			inputDEc.Text = claims
 			inputDEc.Refresh()
 		}),
-		widget.NewButton("Encode", func() {
+		widget.NewButton("Encode & Sign", func() {
 
-			token, err := pkg.GenJWTFromJSON(inputDEc.Text, []byte(pkg.ParsePrivPEM(privPEM.Text)))
+			token, err := pkg.GenJWTFromJSON(inputDEc.Text, privPEM.Text)
 			if err != nil {
 				log.Println("Error generating JWT:", err)
 				token = "Error: " + err.Error()
